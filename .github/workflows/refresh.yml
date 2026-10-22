@@ -1,0 +1,39 @@
+name: 刷新手机版数据
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'      # 每 30 分钟跑一次
+  workflow_dispatch: {}          # 也可以在 GitHub 页面上手动点「Run workflow」
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取仓库
+        uses: actions/checkout@v4
+
+      - name: 安装 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 抓取交易数据
+        env:
+          QBCKS: ${{ secrets.QBCKS }}
+          QBKEY: ${{ secrets.QBKEY }}
+        run: node scripts/fetch-trades.mjs
+
+      - name: 提交 data.json
+        run: |
+          git config user.name "qb-bot"
+          git config user.email "qb-bot@users.noreply.github.com"
+          git add data.json status.json
+          if git diff --cached --quiet; then
+            echo "没有变化，跳过提交"
+          else
+            git commit -m "刷新手机版数据 $(date '+%Y-%m-%d %H:%M')"
+            git push
+          fi

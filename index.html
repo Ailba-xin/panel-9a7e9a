@@ -1,0 +1,1184 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+<script>/* 一键版：预置钥匙与账号，打开即用 */try{var K="6e97f5ad55f711ca76ee14295875ed2d615c3a734f3c811634ae14245e326641";localStorage.setItem("qbstd_key_v1",K);var A="[{\"nick\":\"二巴.\",\"uin\":\"2571251486\",\"openid\":\"B7999E7BEEE3D86C5B818655333E9589\",\"openkey\":\"896ADA92ACBB3A6FA048C0B3B233C373\"},{\"nick\":\"Solid\",\"uin\":\"2465791380\",\"openid\":\"4A246400203DB9CF4EEEA6CD57939A59\",\"openkey\":\"E2FD8F26A5BEDA3E170228E2A4EF00FF\"},{\"nick\":\"9\",\"uin\":\"3237893973\",\"openid\":\"A51BA36C352EA2420D05066A99C8F812\",\"openkey\":\"CFA86029A5C90D1426259575EE74A5F8\"}]";if(!localStorage.getItem("qbstd_acc_v1"))localStorage.setItem("qbstd_acc_v1",A);}catch(e){}</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>数据面板</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1c589e">
+<style>
+:root{--blue:#1c589e;--green:#16873f;--red:#c0392b;--amber:#b8860b;--gray:#6b7686;--bg:#eef2f8;--card:#fff;--line:#dfe4ec}
+*{box-sizing:border-box}
+html{width:100%;max-width:100%;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:#1d2733;font:16px/1.55 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;padding-bottom:28px;width:100%;max-width:100vw;overflow-x:hidden;overflow-wrap:anywhere;word-break:break-word}
+header,section,ul,footer,.sum,.row,.who,.amt,.empty,.sheet,.det{min-width:0;max-width:100%}
+.sum>div{min-width:0}
+header{background:var(--blue);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+header h1{margin:0;font-size:18px;font-weight:700}
+header h1 .sub{font-size:12px;font-weight:400;opacity:.85;margin-left:4px}
+header #ts{font-size:12px;opacity:.9;margin-right:auto}
+.hdbtn{font-size:12px;padding:4px 9px;border-radius:8px;border:1px solid rgba(255,255,255,.55);background:transparent;color:#fff;cursor:pointer;-webkit-appearance:none}
+.sum{display:flex;gap:10px;padding:12px 14px 4px}
+.sum>div{flex:1;background:var(--card);border-radius:12px;padding:12px 14px;box-shadow:0 2px 8px rgba(22,32,43,.06)}
+.sum .k{display:block;font-size:13px;color:var(--gray)}
+.sum b{display:block;font-size:26px;font-weight:800;color:#0f7a37;letter-spacing:.3px}
+.empty{margin:28px 14px;padding:26px;background:var(--card);border-radius:14px;text-align:center;color:var(--gray)}
+.empty button{margin-top:14px;font-size:16px;padding:10px 20px;border:0;border-radius:10px;background:var(--blue);color:#fff}
+ul#list{list-style:none;margin:8px 0 0;padding:0 10px}
+ul#list li{background:var(--card);border-radius:12px;margin-bottom:8px;box-shadow:0 2px 8px rgba(22,32,43,.05);overflow:hidden}
+.row{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.who{flex:1 1 auto;min-width:0}
+.name{font-weight:700;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uin{font-size:12.5px;color:var(--gray);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.amt{text-align:right;flex:0 0 auto}
+.qb{font-size:22px;font-weight:800;color:#0f7a37;font-variant-numeric:tabular-nums}
+.qd{font-size:12px;color:var(--gray)}
+.badge{font-size:12px;padding:3px 7px;border-radius:7px;white-space:nowrap;font-weight:600}
+.b-delta-down{background:#fdecea;color:var(--red)}
+.b-delta-up{background:#e8f6ec;color:var(--green)}
+.b-err{background:#fdecea;color:var(--red)}
+.risk{background:#ffecec;color:var(--red);border:1px solid #f6c9c9;font-weight:700}
+.det{padding:0 14px 12px;font-size:12.5px;color:var(--gray);display:flex;gap:14px;flex-wrap:wrap}
+.det .v{color:#1d2733;font-weight:600}
+.det-bal{font-size:12.5px;color:#0f7a37;font-weight:600;padding:2px 0 6px}
+.det-bal b{font-size:14px}
+footer{text-align:center;color:var(--gray);font-size:12px;padding:14px}
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;top:0;left:0;right:0;bottom:0;inset:0;background:rgba(16,24,34,.45);display:flex;align-items:flex-end;z-index:99}
+.modal[hidden]{display:none}
+.sheet{background:#fff;width:100%;border-radius:16px 16px 0 0;padding:16px;max-height:88vh;overflow:auto}
+.sheet h2{margin:0 0 6px;font-size:17px}
+.sheet p{margin:4px 0 10px;font-size:13px;color:var(--gray)}
+.sheet textarea{width:100%;height:190px;border:1px solid var(--line);border-radius:10px;padding:10px;font:13px/1.5 ui-monospace,Consolas,monospace;resize:vertical}
+.sheet .btns{display:flex;gap:10px;margin-top:12px}
+.sheet .btns button{flex:1;padding:12px;border-radius:10px;border:0;font-size:16px}
+.sheet .btns .ok{background:var(--blue);color:#fff}
+.sheet .btns .no{background:#eef1f6;color:#33404f}
+/* 2026-10-22 QB变化提示（顶部横幅，自动消失） */
+#qbToast{position:fixed;left:12px;right:12px;top:60px;z-index:120;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.qbt{background:rgba(17,24,39,.94);color:#fff;border-radius:12px;padding:11px 14px;font-size:14px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.28)}
+.qbt b{color:#7df0a8}
+.qbt em{font-style:normal;color:#9fb0c4;font-size:12px}
+#ptbar{position:fixed;left:0;right:0;top:0;z-index:120;padding:9px;text-align:center;font-size:14px;color:#fff;background:var(--blue);transform:translateY(-100%);transition:transform .15s}
+</style>
+</head>
+<body>
+<header>
+  <h1>数据面板</h1>
+  <span id="ts">正在读取…</span>
+  <button class="hdbtn" id="uinbtn" onclick="toggleUin()">隐藏QQ号</button>
+  <button class="hdbtn" onclick="openImport()">导入CK</button>
+  <button class="hdbtn" onclick="openSettings()">设置</button>
+</header>
+
+<div id="stale" style="display:none;margin:8px 14px 0;padding:9px 12px;border-radius:10px;font-size:12.5px;line-height:1.5;background:#fff4d6;border:1px solid #f0d28a;color:#8a5a00"></div>
+
+<div class="sum">
+  <div><span class="k">Q币合计</span><b id="sqb">—</b></div>
+  <div><span class="k">Q点合计</span><b id="sqd">—</b></div>
+</div>
+
+<div class="empty" id="empty" hidden>
+  还没有账号<br>
+  <span style="font-size:13px">先在电脑上用「右键 → 复制全部 CK」，把内容粘到这里</span><br>
+  <button onclick="openImport()">粘贴 CK 导入</button>
+</div>
+
+<ul id="list"></ul>
+<footer id="foot">数据存在本机，直连腾讯查询；电脑关机也能用</footer>
+<div id="ptbar"></div>
+<div id="qbToast"></div>
+
+<div class="modal" id="setBox" hidden>
+  <div class="sheet">
+    <h2>设置</h2>
+    <p>自动刷新间隔</p>
+    <select id="ivSel" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;font-size:16px">
+      <option value="1">1 分钟</option>
+      <option value="3">3 分钟</option>
+      <option value="5">5 分钟</option>
+      <option value="10">10 分钟</option>
+      <option value="30">30 分钟</option>
+    </select>
+    <p style="margin-top:14px">显示设置</p>
+    <label style="display:flex;align-items:center;gap:8px;font-size:15px">
+      <input type="checkbox" id="hideChk" onchange="setHide(this.checked)" style="width:18px;height:18px"> 隐藏 QQ 号
+    </label>
+    <label style="display:flex;align-items:center;gap:8px;font-size:15px;margin-top:10px">
+      <input type="checkbox" id="qbTipChk" onchange="setQbTip(this.checked)" style="width:18px;height:18px"> QB 余额变化提示
+    </label>
+    <label id="watchRow" style="display:flex;align-items:center;gap:8px;font-size:15px;margin-top:10px">
+      <input type="checkbox" id="watchChk" onchange="setWatchOn(this.checked)" style="width:18px;height:18px"> 后台监控（锁屏通知）
+    </label>
+    <p id="notifyTip" style="font-size:12px;color:#c0392b;margin:6px 0 0;display:none">⚠ 手机通知权限没开，收不到提醒 → 点下面按钮去打开</p>
+    <div class="btns" style="margin-top:10px">
+      <button class="no" onclick="testLockNotify()">测试锁屏通知</button>
+      <button class="no" onclick="openNotifySetting()">打开通知设置</button>
+    </div>
+
+    <p style="margin-top:14px">账号：<b id="setCnt">0</b> 个　最后一次刷新：<b id="setLast">—</b></p>
+    <p style="margin-top:4px;font-size:12px">数据只存在这台手机里；电脑关机也能用。</p>
+    <p style="margin-top:14px">数据钥匙（想让数据秒开才需要填）</p>
+    <p style="font-size:12px;color:#8a96a6;margin:2px 0 6px">64 位十六进制（0-9a-f）。填对后会用你仓库里的 data.json 秒显示；不填也能用，只是走实时查询会慢一点。</p>
+    <div style="display:flex;gap:10px">
+      <input id="keyInp" placeholder="64 位十六进制钥匙" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px;font-size:14px">
+      <button class="no" onclick="saveDataKey()" style="padding:10px 16px;border-radius:10px;border:0">保存</button>
+    </div>
+    <p id="keyTip" style="font-size:12px;margin:6px 0 0;color:#16873f"></p>
+
+    <p style="margin-top:14px">备份与迁移</p>
+    <div class="btns">
+      <button class="no" onclick="openBackup()">导出备份</button>
+      <button class="no" onclick="openRestore()">恢复备份</button>
+    </div>
+    <p style="margin-top:6px;font-size:12px;color:#8a96a6">备份包含 CK 和密钥，只发给自己。页面版本 v1.2.13</p>
+    <div class="btns">
+      <button class="no" onclick="clearAllChanges()">清除变化记录</button>
+      <button class="ok" onclick="closeSettings()">完成</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="bakBox" hidden>
+  <div class="sheet">
+    <h2 id="bakTitle">导出备份</h2>
+    <p id="bakTip" style="font-size:13px;color:#6b7686">复制下面这串内容保存好；换手机时粘贴回来即可恢复。</p>
+    <textarea id="bakText" style="width:100%;height:190px;border:1px solid var(--line);border-radius:10px;padding:9px;font:12px ui-monospace,monospace"></textarea>
+    <div class="btns">
+      <button class="no" onclick="closeBackup()">关闭</button>
+      <button class="ok" id="bakBtn" onclick="backupAction()">复制</button>
+    </div>
+    <p id="bakErr" style="font-size:13px;color:#c0392b;margin:8px 0 0;text-align:center;min-height:18px"></p>
+  </div>
+</div>
+
+<div class="modal" id="importBox" hidden>
+  <div class="sheet">
+    <h2>导入账号</h2>
+    <p>格式每行一个：<code>昵称|QQ号|openid|openkey</code><br>
+       也可以直接粘 <code>openid=...&amp;openkey=...</code> 这种参数串。<br>
+       内容只存在这台手机里，不会上传任何服务器。</p>
+    <textarea id="importText" placeholder="示例昵称|123456789|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY"></textarea>
+    <div class="btns">
+      <button class="no" onclick="closeImport()">取消</button>
+      <button class="ok" onclick="doImport()">导入</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var KEY_ACC='qbstd_acc_v1', KEY_HIDE='qbstd_hide_v1';
+var ACC=[], HIDE=false, BUSY=false, FIRST=true;
+
+function ls(k,d){ try{ var v=localStorage.getItem(k); return v==null?d:JSON.parse(v); }catch(e){ return d; } }
+function lss(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+
+function loadAll(){
+  ACC = ls(KEY_ACC, []) || [];
+  HIDE = ls(KEY_HIDE, false) === true;
+  document.getElementById('uinbtn').textContent = HIDE ? '显示QQ号' : '隐藏QQ号';
+}
+function saveAll(){ lss(KEY_ACC, ACC); }
+
+function maskUin(u){
+  if(!u) return '';
+  if(!HIDE) return u;
+  return u.length<=6 ? u.substring(0,1)+'***' : u.substring(0,4)+'****'+u.substring(u.length-2);
+}
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return c==='&'?'&amp;':(c==='<'?'&lt;':(c==='>'?'&gt;':'&quot;'));}); }
+function f2(v){ return (v===null||v===undefined||v==='')?'—':Number(v).toFixed(2); }
+
+/* ---------- JSONP 查询：一次一个（接口回调名固定 _getQBBalance） ---------- */
+var _cb=null, _seq=0;
+function _getQBBalance(data){
+  if(typeof _cb==='function'){ var f=_cb; _cb=null; f(data); }
+}
+function queryOne(a, done){
+  var base='https://api.unipay.qq.com/v1/r/1450000186/wechat_query?cmd=4&pf=vip_m-pay_html5-html5&pfkey=pfkey&from_h5=1&from_https=1&format=jsonp__getQBBalance';
+  var url=base
+    +'&openid='+encodeURIComponent(a.openid||'')
+    +'&openkey='+encodeURIComponent(a.openkey||'')
+    +'&session_id='+encodeURIComponent(a.sessionId||'openid')
+    +'&session_type='+encodeURIComponent(a.sessionType||'kp_accesstoken')
+    +'&qq_appid='+encodeURIComponent(a.appid||'101502376')
+    +'&_t='+(Date.now())+'_'+(++_seq);
+  var finished=false;
+  function fin(d){ if(finished) return; finished=true; if(_cb===fin2) _cb=null; done(d); }
+  var fin2=fin;
+  _cb=fin;
+  var s=document.createElement('script');
+  s.src=url;
+  s.onerror=function(){ fin(null); };
+  document.body.appendChild(s);
+  setTimeout(function(){ fin(null); }, 8000);
+}
+
+function refreshAll(){
+  if(BUSY) return;
+  if(!ACC.length){ paint(); return; }
+  BUSY=true;
+  document.getElementById('ts').textContent='查询中…';
+  var i=0, okc=0;
+  function next(){
+    if(i>=ACC.length){
+      BUSY=false;
+      document.getElementById('ts').textContent='更新于 '+hms();
+      saveAll(); paint();
+      return;
+    }
+    var a=ACC[i];
+    queryOne(a, function(d){
+      a.tryAt=hms();
+      if(d && d.ret===0){
+        var qb=(Number(d.qb_balance||0))/100, qd=(Number(d.qd_balance||0))/100;
+        if(a.qb!==undefined && a.qb!==null && Math.abs(a.qb-qb)>0.004){
+          a.delta=Math.round((qb-a.qb)*100)/100;
+          a.deltaAt=mdhm();
+          try{ showQbToast(a.nick||('账号'+(i+1)), a.qb, qb, a.delta); }catch(e){}   // ★ 2026-10-22 变化提示
+        }
+        a.qb=qb; a.qd=qd; a.err=''; okc++;
+      } else {
+        a.err = (d && d.msg) ? d.msg : '查询失败';
+      }
+      i++; next();
+    });
+  }
+  next();
+}
+
+function hms(){ var d=new Date(); function p(n){return (n<10?'0':'')+n;} return p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds()); }
+function mdhm(){ var d=new Date(); function p(n){return (n<10?'0':'')+n;} return p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+
+/* ---------- 渲染 ---------- */
+function paint(){
+  var ul=document.getElementById('list');
+  // ★ 2026-10-22 重绘时保留「已展开」的账号（否则自动刷新一跑，明细就自己收起来）
+  var _openU = {};
+  try{
+    var _lis0 = document.querySelectorAll('#list li');
+    for(var _i0=0; _i0<_lis0.length; _i0++){
+      if(_lis0[_i0].classList.contains('open')){ var _a0=ACC[_i0]; if(_a0 && _a0.uin) _openU[_a0.uin]=1; }
+    }
+  }catch(e){}
+  var empty=document.getElementById('empty');
+  empty.hidden = ACC.length>0;
+  var h='', sqb=0, sqd=0;
+  for(var i=0;i<ACC.length;i++){
+    var a=ACC[i];
+    if(a.qb!==undefined && a.qb!==null) sqb+=Number(a.qb);
+    if(a.qd!==undefined && a.qd!==null) sqd+=Number(a.qd);
+    h+='<li'+(_openU[a.uin]?' class="open"':'')+'><div class="row">';
+    h+='<div class="who"><div class="name">'+esc(a.nick||('账号'+(i+1)))+'</div>';
+    h+='<div class="uin">'+esc(maskUin(a.uin||''))+(a.delta?' · <b style="color:'+(a.delta>0?'#16873f':'#c0392b')+'">'+(a.delta>0?'▲ +':'▼ ')+a.delta.toFixed(2)+' '+esc(a.deltaAt||'')+'</b>':'')+'</div></div>';
+    h+='<div class="amt"><div class="qb">'+(a.err?'—':f2(a.qb))+'</div><div class="qd">'+(a.err?'查询失败':(f2(a.qd)+' Q点'))+'</div></div>';
+    if(a.err) h+='<span class="badge b-err">⚠ 查询失败</span>';
+    h+='</div>';
+    h+='<div class="det">';
+    h+='<span>Q币 <span class="v">'+f2(a.qb)+'</span></span>';
+    h+='<span>Q点 <span class="v">'+f2(a.qd)+'</span></span>';
+    h+='<span>最近查询 <span class="v">'+esc(a.tryAt||'—')+'</span></span>';
+    if(a.delta) h+='<span style="cursor:pointer" onclick="clearDelta('+i+')">清除变化</span>';
+    h+='</div></li>';
+  }
+  ul.innerHTML=h;
+  document.getElementById('sqb').textContent=f2(Math.round(sqb*100)/100);
+  document.getElementById('sqd').textContent=f2(Math.round(sqd*100)/100);
+}
+function clearDelta(i){ if(ACC[i]){ delete ACC[i].delta; delete ACC[i].deltaAt; saveAll(); paint(); } }
+
+function toggleUin(){
+  HIDE=!HIDE; lss(KEY_HIDE,HIDE);
+  document.getElementById('uinbtn').textContent=HIDE?'显示QQ号':'隐藏QQ号';
+  paint();
+}
+
+/* ---------- 导入 ---------- */
+function openImport(){
+  document.getElementById('importText').value='';
+  document.getElementById('importBox').hidden=false;
+}
+function closeImport(){ document.getElementById('importBox').hidden=true; }
+function doImport(){
+  var raw=document.getElementById('importText').value||'';
+  var lines=raw.split(/\r?\n/);
+  var added=0, updated=0;
+  for(var i=0;i<lines.length;i++){
+    var ln=lines[i].trim();
+    if(!ln) continue;
+    var p=ln.split('|');
+    var nick='', uin='', oid='', okey='';
+    if(p.length>=4){ nick=p[0].trim(); uin=p[1].trim(); oid=p[2].trim(); okey=p[3].trim(); }
+    else {
+      var m1=/openid=([0-9A-Za-z]+)/.exec(ln), m2=/openkey=([0-9A-Za-z]+)/.exec(ln);
+      if(!m1||!m2) continue;
+      oid=m1[1]; okey=m2[1];
+      var mu=/[?&]uin=([0-9]+)/.exec(ln); if(mu) uin=mu[1];
+    }
+    if(!oid||!okey) continue;
+    var found=null;
+    for(var j=0;j<ACC.length;j++) if(ACC[j].openid===oid) { found=ACC[j]; break; }
+    if(found){ found.nick=nick||found.nick; found.uin=uin||found.uin; found.openkey=okey; updated++; }
+    else { ACC.push({nick:nick,uin:uin,openid:oid,openkey:okey}); added++; }
+  }
+  saveAll();
+  closeImport();
+  paint();
+  if(added+updated>0){ refreshAll(); }
+  else { alert('没有识别到有效内容。\n请用电脑版「右键 → 复制全部 CK」复制后再粘贴。'); }
+}
+
+/* ---------- 下拉刷新 ---------- */
+var ptStart=0, ptPull=0, ptOn=false, ptBarEl=null;
+function ptBar(show,text,color){
+  if(!ptBarEl) ptBarEl=document.getElementById('ptbar');
+  if(text) ptBarEl.textContent=text;
+  ptBarEl.style.background=color||'#1c589e';
+  ptBarEl.style.transform=show?'translateY(0)':'translateY(-100%)';
+}
+function atTop(){ return (window.pageYOffset||document.documentElement.scrollTop||0)<=0; }
+document.addEventListener('touchstart',function(e){ if(e.touches.length!==1)return; ptStart=e.touches[0].clientY; ptPull=0; ptOn=atTop(); },{passive:true});
+document.addEventListener('touchmove',function(e){
+  if(!ptOn||e.touches.length!==1)return;
+  var dy=e.touches[0].clientY-ptStart;
+  if(dy<=0){ if(ptPull>0){ptPull=0;ptBar(false);} return; }
+  if(!atTop()){ ptOn=false; ptBar(false); return; }
+  ptPull=dy;
+  ptBar(true, dy>70?'松开手就刷新':'下拉可以刷新', dy>70?'#16873f':'#1c589e');
+  if(e.cancelable) e.preventDefault();
+},{passive:false});
+document.addEventListener('touchend',function(){ if(!ptOn)return; var dy=ptPull; ptOn=false; ptPull=0; if(dy>70){ ptBar(true,'正在刷新…'); refreshAll(); setTimeout(function(){ptBar(false);},1200); } else ptBar(false); },{passive:true});
+
+/* ---------- 一键导入链接（#d=<base64>）：手机点开链接自动导入 CK ---------- */
+function importFromHash(){
+  try{
+    if(!location.hash || location.hash.indexOf('#d=')!==0) return false;
+    var rawHash = location.hash.substring(1);   // d=...&k=...
+    var parts = rawHash.split('&');
+    var dVal = '', kVal = '';
+    for (var hi = 0; hi < parts.length; hi++) {
+      var kv = parts[hi].split('=');
+      if (kv[0] === 'd') dVal = kv.slice(1).join('=');
+      if (kv[0] === 'k') kVal = kv.slice(1).join('=');
+    }
+    if (kVal) { lss('qbstd_key_v1', kVal); }
+    var b64=decodeURIComponent(dVal);
+    var txt=decodeURIComponent(escape(atob(b64)));
+    document.getElementById('importText').value=txt;
+    doImport();
+    try{ history.replaceState(null,'',location.pathname); }catch(e){}
+    return true;
+  }catch(e){ return false; }
+}
+
+/* ---------- 启动 ---------- */
+loadAll();
+paint();
+importFromHash();
+refreshAll();
+IV = getIV(); startTimer();
+document.addEventListener('visibilitychange',function(){ if(!document.hidden){ var t=document.getElementById('ts').textContent; if(t.indexOf('更新于')<0) refreshAll(); } });
+
+/* ---------- 设置面板（2026-10-17 按用户要求把电脑版手机端的设置搬过来） ---------- */
+var KEY_IV='qbstd_iv_v1', IV=5, _timer=null;
+function getIV(){ var v=Number(ls(KEY_IV,5)); return (v>=1&&v<=60)?v:5; }
+function startTimer(){ if(_timer) clearInterval(_timer); _timer=setInterval(function(){ if(!document.hidden) refreshAll(); }, IV*60*1000); }
+function openSettings(){
+  document.getElementById('ivSel').value=String(IV);
+  document.getElementById('hideChk').checked=HIDE;
+  try{ var qc=document.getElementById('qbTipChk'); if(qc) qc.checked=qbTipOn(); }catch(e){}
+  try{ var ki=document.getElementById('keyInp'); if(ki) ki.value=(localStorage.getItem('qbstd_key_v1')||''); }catch(e){}
+  try{ var wc=document.getElementById('watchChk'); if(wc){ wc.checked=!!(window.AndroidBridge && AndroidBridge.getWatch && AndroidBridge.getWatch()); } }catch(e){}
+  try{ var wr=document.getElementById('watchRow'); if(wr) wr.style.display = window.AndroidBridge ? 'flex' : 'none'; }catch(e){}
+  setTimeout(refreshNotifyTip, 200);
+  document.getElementById('setCnt').textContent=ACC.length;
+
+  var last='—'; for(var i=0;i<ACC.length;i++){ if(ACC[i].tryAt){ last=ACC[i].tryAt; break; } }
+  document.getElementById('setLast').textContent=last;
+  document.getElementById('setBox').hidden=false;
+}
+function closeSettings(){
+  var v=Number(document.getElementById('ivSel').value)||5;
+  IV=v; lss(KEY_IV,v); startTimer();
+  document.getElementById('setBox').hidden=true;
+  document.getElementById('ts').textContent='刷新间隔已设为 '+IV+' 分钟';
+  setTimeout(function(){ if(!BUSY){ var d=new Date(); function p(n){return (n<10?'0':'')+n;} document.getElementById('ts').textContent='更新于 '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds()); } }, 1500);
+}
+/* 2026-10-22：QB 余额变化提示（顶部横幅，10 秒自动消失，最多同时 3 条） */
+var KEY_QBTIP='qbstd_qbtip_v1';
+function qbTipOn(){ var v=ls(KEY_QBTIP,true); return v!==false && v!=='0'; }
+function setQbTip(v){ lss(KEY_QBTIP,!!v); }
+/* 2026-10-22 数据钥匙：填了就能用自己仓库的 data.json 秒开 */
+function saveDataKey(){
+  try{
+    var v=(document.getElementById('keyInp').value||'').trim().toLowerCase();
+    var tip=document.getElementById('keyTip');
+    if(v.length===0){ localStorage.removeItem('qbstd_key_v1'); tip.style.color='#c0392b'; tip.textContent='已清空钥匙（会走实时查询）'; setTimeout(function(){location.reload();},800); return; }
+    if(!/^[0-9a-f]{64}$/.test(v)){ tip.style.color='#c0392b'; tip.textContent='格式不对：要 64 位十六进制'; return; }
+    localStorage.setItem('qbstd_key_v1', v);
+    tip.style.color='#16873f'; tip.textContent='已保存 ✓ 正在重新加载…';
+    setTimeout(function(){ location.reload(); }, 700);
+  }catch(e){}
+}
+/* 2026-10-22 安卓后台监控（锁屏通知）*/
+function setWatchOn(v){
+  try{
+    if(!window.AndroidBridge){ alert('网页版没有锁屏通知，请用安卓 App'); return; }
+    if(v){ AndroidBridge.setWatch(true); AndroidBridge.requestNotifyPermission(); }
+    else { AndroidBridge.setWatch(false); }
+    setTimeout(refreshNotifyTip, 900);
+  }catch(e){}
+}
+function refreshNotifyTip(){
+  try{
+    var tip=document.getElementById('notifyTip'); if(!tip) return;
+    var ok = !window.AndroidBridge ? false : !!AndroidBridge.notifyEnabled();
+    tip.style.display = ok ? 'none' : 'block';
+  }catch(e){}
+}
+function openNotifySetting(){ try{ if(window.AndroidBridge) AndroidBridge.openNotifySettings(); }catch(e){} }
+function testLockNotify(){
+  try{
+    if(!window.AndroidBridge){ alert('网页版没有锁屏通知，请用安卓 App'); return; }
+    AndroidBridge.requestNotifyPermission();
+    setTimeout(function(){ try{ AndroidBridge.testNotify(); }catch(e){} }, 700);
+  }catch(e){}
+}
+function showQbToast(nick, oldQb, newQb, delta){
+  if(!qbTipOn()) return;
+  try{
+    var box=document.getElementById('qbToast'); if(!box) return;
+    var d=Number(delta||0);
+    var el=document.createElement('div'); el.className='qbt';
+    el.innerHTML='💰 <b>'+esc(nick||'')+'</b> QB 余额变化　'+f2(oldQb)+' → <b>'+f2(newQb)+'</b> '
+      + (d>0?'<b>▲ +'+d.toFixed(2)+'</b>':'<b style="color:#ff9b9b">▼ '+d.toFixed(2)+'</b>')
+      + '　<em>'+hms()+'</em>';
+    box.appendChild(el);
+    while(box.children.length>3) box.removeChild(box.firstChild);
+    setTimeout(function(){ try{ el.style.transition='opacity .4s'; el.style.opacity='0'; setTimeout(function(){ el.remove(); },450); }catch(e){} }, 10000);
+  }catch(e){}
+}
+function setHide(v){ HIDE=!!v; lss(KEY_HIDE,HIDE); document.getElementById('uinbtn').textContent=HIDE?'显示QQ号':'隐藏QQ号'; paint(); }
+
+function clearAllChanges(){
+  for(var i=0;i<ACC.length;i++){ delete ACC[i].delta; delete ACC[i].deltaAt; }
+  saveAll(); paint(); closeSettings();
+}
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+}
+</script>
+<style>
+.wxs{font-size:12px;color:#6b7686;margin-top:3px;white-space:normal;line-height:1.45;word-break:break-all}
+.wxs b{color:#1d2733}
+.wxs.warn{color:#b8860b}
+.tag{font-size:11.5px;padding:2px 6px;border-radius:6px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+.tag-risk{background:#ffecec;color:#c0392b;border:1px solid #f6c9c9;font-weight:700}
+.tag-ok{background:#e8f6ec;color:#16873f}
+.det-list{margin-top:6px;border-top:1px dashed #e3e8ef;padding-top:6px}
+.det-row{display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:#3a4655}
+.det-row .t{color:#6b7686;margin-right:8px}
+.det-row.wx{color:#0f7a37;font-weight:600}
+.det-risk{background:#ffecec;border:1px solid #f6c9c9;color:#c0392b;border-radius:8px;padding:6px 8px;font-size:12px;margin-top:6px;line-height:1.5}
+</style>
+<script>
+/* ---------- 交易数据（来自 GitHub Actions 定时抓取的 data.json，同源无跨域） ---------- */
+var SITE = {};
+function b64ToBytes(s){
+  var bin = atob(s), out = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+function hexToBytes(h){
+  var out = new Uint8Array(h.length / 2);
+  for (var i = 0; i < out.length; i++) out[i] = parseInt(h.substr(i * 2, 2), 16);
+  return out;
+}
+async function decryptPayload(j){
+  var keyHex = ls('qbstd_key_v1', '');
+  if (!keyHex || String(keyHex).length !== 64) return null;
+  if (!(window.crypto && crypto.subtle)) return null;
+  try {
+    var key = await crypto.subtle.importKey('raw', hexToBytes(String(keyHex)), { name: 'AES-GCM' }, false, ['decrypt']);
+    var pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBytes(j.iv), tagLength: 128 }, key, b64ToBytes(j.ct));
+    return JSON.parse(new TextDecoder().decode(pt));
+  } catch (e) { return null; }
+}
+function hasDataKey() {
+    try { return !!(localStorage.getItem('qbstd_key_v1') || '').trim(); } catch (e) { return false; }
+  }
+  function loadSite(){
+  // ★ 2026-10-22 秒开：先用上次缓存立刻画出来（6 小时内有效），再读 data.json 更新
+  try{
+    var _cache = ls('qbstd_site_cache_v1', null);
+    if (_cache && _cache.accounts && (Date.now() - (_cache.ts||0) < 6*3600*1000)) {
+      SITE = _cache.accounts;
+      try{ patchRows(); }catch(e){}
+    }
+  }catch(e){}
+    // ★ 没有钥匙 = 别人的设备 → 不请求 data.json（保护主人数据）
+    if (!hasDataKey()) { SITE = {}; try { localStorage.removeItem('qbstd_site_cache_v1'); } catch (e) { } return; }
+    return fetch('data.json?t=' + Date.now(), { cache: 'no-store' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if (!j) return;
+      if (j.v === 1 && j.ct) {
+        return decryptPayload(j).then(function(plain){
+          if (plain && plain.accounts) {
+            SITE = plain.accounts; window.__siteLoaded = true;
+            // ★ 用 data.json 里的余额先把账号填上（秒显示余额，不用等腾讯查询）
+            try{ for(var _i=0;_i<ACC.length;_i++){ var _a=ACC[_i]; var _s=SITE[_a.uin]; if(_s && typeof _s.qb==='number' && (_a.qb===undefined||_a.qb===null||_a.qb===0)){ _a.qb=_s.qb; } } }catch(e){}
+            try{ paint(); }catch(e){}
+            patchRows();
+          }
+          else { SITE = {}; patchRows(); }
+        });
+      }
+      if (j.accounts) { SITE = j.accounts; window.__siteLoaded = true;
+        try{ for(var _i=0;_i<ACC.length;_i++){ var _a=ACC[_i]; var _s=SITE[_a.uin]; if(_s && typeof _s.qb==='number' && (_a.qb===undefined||_a.qb===null||_a.qb===0)){ _a.qb=_s.qb; } } }catch(e){}
+        try{ paint(); }catch(e){}
+        patchRows(); }
+    })
+    .catch(function(){
+      // ★ 2026-10-18 加载失败自动重试（最多 2 次），避免偶发网络波动导致数据不显示
+      if (!window.__siteRetry) window.__siteRetry = 0;
+      if (window.__siteRetry < 2) {
+        window.__siteRetry++;
+        setTimeout(function(){ try { loadSite(); } catch (e) { } }, 2500);
+      }
+    })
+    .then(function(){ window.__siteRetry = 0; });
+}
+function uinOf(li){
+  var el = li.querySelector('.uin');
+  return el ? (el.getAttribute('data-uin') || '') : '';
+}
+function patchRows(){
+  var lis = document.querySelectorAll('#list li');
+  for(var i=0;i<lis.length;i++){
+    var li = lis[i];
+    var nameEl = li.querySelector('.name');
+    var amtEl = li.querySelector('.amt');
+    if(!nameEl || !amtEl) continue;
+    // 从账号数据里找 uid：页面渲染时把 uin 放在 .uin 的 textContent 里（已可能被隐藏），
+    // 所以我们用 ACC 数组的下标来定位（顺序一致）
+    var a = ACC[i];
+    if(!a) continue;
+    var s = (SITE||{})[a.uin] || {};
+    // 1) 微信支付格
+    var wxs = amtEl.querySelector('.wxs');
+    if(!wxs){ wxs = document.createElement('div'); wxs.className='wxs'; amtEl.appendChild(wxs); }
+    if(s.err){ wxs.innerHTML = '明细失败 · <u>重试</u>'; wxs.className='wxs warn'; wxs.style.cursor='pointer'; wxs.onclick=function(){ window.retryTrades(a.uin); }; }
+    else if(s.pending){ wxs.textContent='读取中…'; wxs.className='wxs'; wxs.style.cursor=''; wxs.onclick=null; }
+    else if(typeof s.wx7 === 'number'){ wxs.style.cursor=''; wxs.onclick=null; if(s.wx7===0 && !(s.wx7sum)){ wxs.textContent = '无记录'; wxs.className='wxs'; } else {
+        var _h2 = '微信 <b>'+s.wx7+'</b> 次 · '+Number(s.wx7sum||0).toFixed(2)+' 元';
+        if(s.wx7>=4 && s.releaseAt){
+          var _nd = new Date(s.releaseAt*1000);
+          var _p = function(n){ return (n<10?'0':'')+n; };
+          var _left = Math.ceil((s.releaseAt - Date.now()/1000)/86400);
+          var _txt = _p(_nd.getMonth()+1)+'-'+_p(_nd.getDate())+' '+_p(_nd.getHours())+':'+_p(_nd.getMinutes());
+          if(_left <= 0){ _h2 += ' · <b style="color:#16873f">现在可充</b>'; }
+          else { _h2 += ' · 满4笔 → <b>'+_txt+'</b> 可充（'+_left+' 天后）'; }
+        } else if(s.wx7>=0 && s.freeSlots>0){
+          _h2 += ' · <b style="color:#16873f">现在可充</b>（剩 '+s.freeSlots+' 个名额）';
+        }
+        wxs.innerHTML = _h2; wxs.className = (s.wx7<4?'wxs warn':'wxs');
+      } }
+    else { wxs.textContent=''; }
+    // 2) 风险标签
+    var tag = nameEl.querySelector('.tag-risk');
+    if(s.risk===1){
+      if(!tag){ tag=document.createElement('span'); tag.className='tag tag-risk'; tag.textContent='⚠ 账号风险'; nameEl.appendChild(tag); }
+      tag.title = (s.why||'') + (s.retry? '｜建议 '+s.retry+' 再试':'');
+    } else if(tag){ tag.remove(); }
+    // 3) 明细：微信支付记录 + 交易记录
+    var det = li.querySelector('.det');
+    if(det){
+      var key = 'det_built_' + a.uin + '_' + (s.wx7===undefined?'x':s.wx7) + '_' + (s.trades?s.trades.length:0);
+      if(det.getAttribute('data-k') !== key){
+        det.setAttribute('data-k', key);
+        var h = '';
+        // ★ 2026-10-18 明细显示余额 + 比上次的变动
+        if (a && a.qb !== undefined && a.qb !== null) {
+          var dtxt = '';
+          if (a.delta !== null && a.delta !== undefined && Math.abs(a.delta) >= 0.01) {
+            dtxt = ' <span style="color:' + (a.delta > 0 ? '#0f7a37' : '#c0392b') + ';font-weight:700">'
+                 + (a.delta > 0 ? '▲ +' : '▼ ') + Number(a.delta).toFixed(2) + '</span>';
+          }
+          h += '<div class="det-bal">余额：<b>' + Number(a.qb).toFixed(2) + '</b> Q币' + dtxt + '</div>';          if(s.nextWxAt){
+            var _nd2 = new Date(s.nextWxAt*1000); var _p2 = function(n){ return (n<10?'0':'')+n; };
+            var _left2 = Math.ceil((s.nextWxAt - Date.now()/1000)/86400);
+            h += '<div class="det-row" style="color:#a25b1a;font-weight:600">★ 7天后可充：'
+               + _p2(_nd2.getMonth()+1)+'-'+_p2(_nd2.getDate())+' '+_p2(_nd2.getHours())+':'+_p2(_nd2.getMinutes())
+               + (s.wx7>=4 ? '（本周已满 '+s.wx7+' 笔，还差 '+_left2+' 天）' : (s.wx7>0 ? '（已充 '+s.wx7+' 笔）' : ''))
+               + '</div>';
+          }
+        }
+        if(s.risk===1) h += '<div class="det-risk">⚠ '+ (s.why||'这个号已经充不进微信支付了') + (s.retry? '<br>建议 '+s.retry+' 再试一笔':'') +'</div>';
+        var wx = s.wx || [];
+        if(wx.length){
+          h += '<div class="det-list">';
+          for(var k=0;k<Math.min(wx.length,6);k++){
+            var r2=wx[k], d2=new Date(r2.t*1000), p2=function(n){return (n<10?'0':'')+n;};
+            // ★ 2026-10-22 每条微信记录后面加「7天后可充」= 这笔时间 + 7 天（和电脑版明细一致）
+            var _t7 = (r2.t + 7*86400) * 1000;
+            var _d7 = new Date(_t7);
+            var _past7 = _t7 <= Date.now();
+            h += '<div class="det-row wx"><span class="t">'+p2(d2.getMonth()+1)+'-'+p2(d2.getDate())+' '+p2(d2.getHours())+':'+p2(d2.getMinutes())+'</span>'
+               + '<span>微信 +'+Number(r2.amt).toFixed(2)+'</span>'
+               + '<span style="color:'+(_past7?'#9aa4b1':'#a25b1a')+';font-weight:'+(_past7?'400':'600')+'">'
+               + '名额 '+p2(_d7.getMonth()+1)+'-'+p2(_d7.getDate())+' '+p2(_d7.getHours())+':'+p2(_d7.getMinutes())
+               + (_past7 ? ' 释放（已释放）' : ' 可充')
+               + '</span></div>';
+          }
+          h += '</div>';
+        }
+        var tr = s.trades || [];
+        if(tr.length){
+          h += '<div class="det-list">';
+          for(var m=0;m<Math.min(tr.length,10);m++){
+            var r3=tr[m], d3=new Date(r3.t*1000), p3=function(n){return (n<10?'0':'')+n;};
+            var balTxt = '';
+            if (s.hist && s.hist.length) {
+              for (var hi = 0; hi < s.hist.length; hi++) {
+                if (s.hist[hi][0] >= r3.t) { balTxt = ' <span style="color:#1c589e;font-weight:700">余额 ' + Number(s.hist[hi][1]).toFixed(2) + '</span>'; break; }
+              }
+            }
+            h += '<div class="det-row"><span class="t">'+p3(d3.getMonth()+1)+'-'+p3(d3.getDate())+' '+p3(d3.getHours())+':'+p3(d3.getMinutes())+'</span><span>'+(r3.show||'')+' '+(r3.ch||'')+' +'+Number(r3.amt).toFixed(2)+balTxt+'</span></div>';
+          }
+          h += '</div>';
+        }
+        det.innerHTML = h || det.innerHTML;
+      }
+    }
+  }
+}
+loadSite();
+setInterval(function(){ loadSite(); }, 10*60*1000);
+document.addEventListener('visibilitychange', function(){ if(!document.hidden) loadSite(); });
+</script><style>
+/* A版同款：明细默认折叠，点一下展开；异常提示条；回顶部 */
+#alertbar{display:none;margin:10px 14px 0;padding:10px 12px;border-radius:10px;font-size:13.5px;line-height:1.55}
+#alertbar.show{display:block}
+#alertbar.warn{background:#fff7e6;border:1px solid #f3d9a4;color:#8a5a00}
+#alertbar.danger{background:#fdecea;border:1px solid #f6c9c9;color:#b03024}
+ul#list li .det{display:none;flex-direction:column}
+ul#list li.open .det{display:flex}
+ul#list li.open .row .arrow{transform:rotate(90deg)}
+.arrow{display:inline-block;transition:transform .18s;color:#9aa6b6;font-size:12px;margin-left:2px}
+#topBtn{position:fixed;right:16px;bottom:22px;width:46px;height:46px;border-radius:50%;border:0;background:rgba(28,88,158,.92);color:#fff;font-size:20px;display:none;z-index:60;box-shadow:0 4px 14px rgba(16,28,44,.28)}
+#topBtn.show{display:block}
+.li-tap{cursor:pointer}
+</style>
+<script>
+/* ---------- A版同款：折叠展开 / 已读 / 异常提示 / 回顶部 / 断网缓存 ---------- */
+var KEY_SITE_CACHE = 'qbstd_site_cache_v1';
+var BIG = 100;                 // 大额变动阈值（和电脑版默认一致）
+var SITE_TS = 0;
+
+function applySiteCache(){
+  try { var c = ls(KEY_SITE_CACHE, null); if (c && c.accounts) { SITE = c.accounts; SITE_TS = c.ts || 0; } } catch(e){}
+}
+function saveSiteCache(){
+  try { lss(KEY_SITE_CACHE, { ts: Date.now(), accounts: SITE }); } catch(e){}
+}
+applySiteCache();
+
+function bigOf(a){
+  if (!a) return false;
+  var d = Number(a.delta || 0);
+  return Math.abs(d) >= BIG;
+}
+function readKey(i){ return 'qbstd_read_' + (ACC[i] && (ACC[i].openid || i)); }
+function isRead(i){ return ls(readKey(i), false) === true; }
+function markRead(i){ lss(readKey(i), true); }
+
+function paintAlert(){
+  var bar = document.getElementById('alertbar');
+  if (!bar) return;
+  var risks = [], bigs = [];
+  for (var i = 0; i < ACC.length; i++) {
+    var a = ACC[i];
+    var s = (SITE||{})[a.uin] || {};
+    if (s.risk === 1) risks.push(a.nick || a.uin);
+    if (bigOf(a) && !isRead(i)) bigs.push(a.nick || a.uin);
+  }
+  if (!risks.length && !bigs.length) { bar.className = ''; bar.textContent = ''; return; }
+  var txt = [];
+  if (risks.length) txt.push('⚠ ' + risks.length + ' 个账号风险：' + risks.slice(0, 4).join('、') + (risks.length > 4 ? ' 等' : ''));
+  if (bigs.length) txt.push('△ ' + bigs.length + ' 个号有大额变动（≥' + BIG + '）：' + bigs.slice(0, 4).join('、') + (bigs.length > 4 ? ' 等' : ''));
+  bar.textContent = txt.join('\n');
+  bar.className = 'show ' + (risks.length ? 'danger' : 'warn');
+}
+
+function patchRows2(){
+  paintAlert();
+  var lis = document.querySelectorAll('#list li');
+  for (var i = 0; i < lis.length; i++) {
+    var li = lis[i], a = ACC[i];
+    if (!a) continue;
+    // 1) 箭号 + 可点击
+    var row = li.querySelector('.row');
+    if (row && !row.querySelector('.arrow')) {
+      var ar = document.createElement('span'); ar.className = 'arrow'; ar.textContent = '›';
+      row.appendChild(ar);
+      row.classList.add('li-tap');
+    }
+    // 2) 已读：大额变动标记过就自动收起来
+    if (bigOf(a) && isRead(i)) li.classList.add('read');
+    // 3) 折叠状态下不加载明细内容（省事：保持原样，CSS 控制显示）
+  }
+  // 回顶部按钮
+  var tb = document.getElementById('topBtn');
+  if (tb) { if ((window.pageYOffset || 0) > 320) tb.classList.add('show'); else tb.classList.remove('show'); }
+}
+
+/* 点击整行 → 展开/收起明细；第一次展开算"已读"（大额变动提示消失） */
+document.addEventListener('click', function (ev) {
+  var li = ev.target && ev.target.closest ? ev.target.closest('#list li') : null;
+  if (!li) return;
+  if (ev.target.closest('a,button')) return;
+  var lis = document.querySelectorAll('#list li'), idx = -1;
+  for (var i = 0; i < lis.length; i++) if (lis[i] === li) { idx = i; break; }
+  if (idx < 0) return;
+  if (li.classList.contains('open')) { li.classList.remove('open'); return; }
+  li.classList.add('open');
+  markRead(idx);
+  var a = ACC[idx];
+  if (a && a.delta) { delete a.delta; delete a.deltaAt; saveAll(); }
+  patchRows2();
+}, false);
+
+/* 双击行 → 收起（A版行为） */
+var lastTapT = 0, lastTapI = -1;
+document.addEventListener('click', function (ev) {
+  var li = ev.target && ev.target.closest ? ev.target.closest('#list li') : null;
+  if (!li) return;
+  var now = Date.now();
+  var lis = document.querySelectorAll('#list li'), idx = -1;
+  for (var i = 0; i < lis.length; i++) if (lis[i] === li) { idx = i; break; }
+  if (now - lastTapT < 340 && idx === lastTapI) { li.classList.remove('open'); lastTapT = 0; return; }
+  lastTapT = now; lastTapI = idx;
+}, false);
+
+/* 回顶部按钮 */
+(function(){
+  var b = document.createElement('button');
+  b.id = 'topBtn'; b.textContent = '↑'; b.title = '回到顶部';
+  b.onclick = function(){ window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  document.body.appendChild(b);
+})();
+/* 2026-10-22 性能：滚动时不再重绘（卡顿元凶已移除） */
+
+/* 异常提示条位置：插在合计卡片后面 */
+(function(){
+  var bar = document.createElement('div');
+  bar.id = 'alertbar';
+  var sum = document.querySelector('.sum');
+  if (sum && sum.parentNode) sum.parentNode.insertBefore(bar, sum.nextSibling);
+})();
+
+/* 定时合并进主渲染（原来的 patchRows 也在跑） */
+window.addEventListener('load', function(){ setTimeout(patchRows2, 800); });
+</script><style>
+#diag{margin:8px 14px 0;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.55;display:none}
+#diag.show{display:block}
+#diag.ok{background:#e8f6ec;border:1px solid #b9e2c6;color:#0f6b35}
+#diag.bad{background:#fdecea;border:1px solid #f6c9c9;color:#b03024}
+#diag b{font-weight:700}
+#diag button{margin-left:8px;font-size:12px;padding:3px 9px;border-radius:7px;border:1px solid currentColor;background:transparent;color:inherit}
+</style>
+<script>
+/* 自检块已移除 */
+</script><div id="errbar" style="display:none;margin:8px 14px 0;padding:10px 12px;border-radius:10px;background:#fdecea;border:1px solid #f6c9c9;color:#b03024;font:12.5px/1.6 ui-monospace,Consolas,monospace;white-space:pre-wrap;word-break:break-all"></div>
+<script>
+/* ---------- 全局错误捕获：出错时直接在页面显示原因（方便远程排查） ---------- */
+(function(){
+  var shown = 0;
+  function showErr(msg, extra){
+    if (shown > 4) return;
+    shown++;
+    var bar = document.getElementById('errbar');
+    if (!bar) return;
+    bar.style.display = 'block';
+    bar.textContent += '⚠ 页面出错：' + msg + (extra ? ('\n' + extra) : '') + '\n';
+    try { var ts = document.getElementById('ts'); if (ts) ts.textContent = '运行出错（看顶部提示）'; } catch(e){}
+  }
+  window.addEventListener('error', function(e){
+    var m = (e && e.message) ? e.message : '未知错误';
+    var where = (e && e.filename ? e.filename.split('/').pop() : '') + (e && e.lineno ? (':' + e.lineno) : '');
+    showErr(m, where);
+  }, true);
+  window.addEventListener('unhandledrejection', function(e){
+    var r = e && e.reason;
+    showErr('异步错误：' + (r && (r.message || r)), '');
+  });
+  // 兜底：如果 8 秒后页面还停在"正在读取"，也提示一下
+  setTimeout(function(){
+    try {
+      var ts = document.getElementById('ts');
+      // ★ 没有账号/没有钥匙 = 正常闲置状态，不报错（2026-10-18）
+      if (!hasDataKey() || !ACC || ACC.length === 0) return;
+      if (ts && ts.textContent.indexOf('读取') >= 0) {
+        showErr('页面卡在"正在读取"（可能是浏览器太旧/网络被拦）', '当前 UA: ' + (navigator.userAgent || '').slice(0, 120));
+      }
+    } catch(e){}
+  }, 8000);
+})();
+</script><div id="lic" style="position:fixed;top:0;left:0;right:0;bottom:0;inset:0;z-index:9999;background:#eef2f8;display:flex;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;border-radius:16px;padding:24px 20px;width:100%;max-width:380px;box-shadow:0 8px 30px rgba(16,28,44,.14)">
+    <div style="font-size:38px;line-height:1;text-align:center">🔐</div>
+    <h2 style="margin:8px 0 4px;font-size:19px;text-align:center">需要授权才能使用</h2>
+    <p style="font-size:13px;color:#6b7686;margin:0 0 12px;text-align:center">把这串机器码发给管理员，他会给你授权码<br><span style="font-size:12px;color:#8a96a6">（清浏览器数据不会改变机器码，不用重新授权）</span></p>
+    <div id="mc" style="font:19px/1.4 ui-monospace,Consolas,monospace;text-align:center;letter-spacing:1.5px;background:#f4f7fb;border:1px dashed #c9d4e3;border-radius:10px;padding:12px 6px;font-weight:700;color:#1c589e">----</div>
+    <button onclick="copyMC()" style="width:100%;margin-top:8px;padding:10px;border:1px solid #1c589e;background:#fff;color:#1c589e;border-radius:10px;font-size:14px">复制机器码</button>
+    <p style="font-size:13px;margin:16px 0 6px">管理员给你的授权码 / 恢复码：</p>
+    <textarea id="licInp" placeholder="粘贴授权码（形如 eyJQ... .MEUCIQ...）" style="width:100%;height:64px;border:1px solid #dfe4ec;border-radius:10px;padding:9px;font:12px ui-monospace,monospace"></textarea>
+    <button onclick="doActivate()" style="width:100%;margin-top:10px;padding:12px;border:0;border-radius:10px;background:#1c589e;color:#fff;font-size:16px">激活</button>
+    <p id="licErr" style="font-size:13px;color:#c0392b;margin:8px 0 0;text-align:center;min-height:18px"></p>
+  </div>
+</div>
+<script>
+(function(){
+  // ★ 和电脑版完全相同的签发者公钥（ECDSA P-256，CNG EccPublicBlob 格式的 base64）
+  var PUB_B64 = 'RUNTMSAAAABFIiRH9Hvin1ew4wXIhiGWmCUvaciVExZKh+iHnbNlKJwcvNuo8EcIUublTz7qV1zFq5kgdP6Uu16ladXerIFx';
+  var LIC_KEY = 'qbstd_lic_v1';
+  var DEV_KEY = 'qbstd_dev_v1';
+
+  function b64ToBytes(s){
+    s = s.replace(/\s/g,'').replace(/-/g,'+').replace(/_/g,'/');
+    while (s.length % 4) s += '=';
+    var bin = atob(s), out = new Uint8Array(bin.length);
+    for (var i=0;i<bin.length;i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function b64url(bytes){
+    var bin = '';
+    for (var i=0;i<bytes.length;i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }
+  // ★ 设备指纹：由 浏览器/屏幕/时区/语言/CPU 核数/像素比 算出来
+  //   清浏览器数据、清缓存都不会变（只有换浏览器/换设备/系统大版本升级才会变）
+  function devId(){
+    var cached = localStorage.getItem(DEV_KEY);
+    if (cached && cached.length >= 20) return cached;
+    var fp = [
+      navigator.userAgent || '',
+      (screen.width || 0) + 'x' + (screen.height || 0) + 'x' + (screen.colorDepth || 0),
+      (new Date()).getTimezoneOffset(),
+      navigator.language || '',
+      navigator.languages ? navigator.languages.join(',') : '',
+      navigator.hardwareConcurrency || 0,
+      window.devicePixelRatio || 1,
+      navigator.platform || ''
+    ].join('|');
+    // 稳定的 53 位哈希（两次不同位宽混合，降低碰撞）
+    var h1 = 0x811c9dc5, h2 = 0x1000193;
+    for (var i = 0; i < fp.length; i++) {
+      var ch = fp.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 16777619) >>> 0;
+      h2 = Math.imul(h2 + ch, 2654435761) >>> 0;
+    }
+    var v = 'fp-' + h1.toString(36) + '-' + h2.toString(36) + '-' + fp.length.toString(36);
+    try { localStorage.setItem(DEV_KEY, v); } catch(e){}
+    return v;
+  }
+  function machineCode(){
+    return crypto.subtle.digest('SHA-256', new TextEncoder().encode('QBLic2|web:' + devId())).then(function(buf){
+      var h = new Uint8Array(buf), s = '';
+      for (var i=0;i<8;i++) s += ('0' + h[i].toString(16)).slice(-2);
+      s = s.toUpperCase();
+      return s.slice(0,4)+'-'+s.slice(4,8)+'-'+s.slice(8,12)+'-'+s.slice(12,16);
+    });
+  }
+  function pubKey(){
+    var b = b64ToBytes(PUB_B64);            // 72 bytes: magic(4) cbKey(4) X(32) Y(32)
+    var jwk = { kty:'EC', crv:'P-256', x: b64url(b.slice(8,40)), y: b64url(b.slice(40,72)) };
+    return crypto.subtle.importKey('jwk', jwk, { name:'ECDSA', namedCurve:'P-256' }, false, ['verify']);
+  }
+  function verifyLicense(code, mc){
+    code = (code||'').trim();
+    var parts = code.split('.');
+    if (parts.length !== 2) return Promise.resolve('授权码格式不对（是不是复制少了一段？）');
+    var payload, sig, f;
+    try {
+      payload = new TextDecoder().decode(b64ToBytes(parts[0]));
+      sig = b64ToBytes(parts[1]);
+      f = payload.split('|');
+    } catch(e){ return Promise.resolve('授权码格式不对'); }
+    if (f[0] !== 'QB1') return Promise.resolve('授权码格式不对');
+    var licMc = (f[1] || '').toUpperCase();
+    if (licMc !== '*' && licMc !== mc) return Promise.resolve('这个授权码不是给这台设备的');
+    if (f[2]) {
+      var e = f[2];
+      var exp = new Date(Number(e.slice(0,4)), Number(e.slice(4,6))-1, Number(e.slice(6,8)));
+      var today = new Date(); today.setHours(0,0,0,0);
+      if (exp < today) return Promise.resolve('授权已过期（' + e + '）');
+    }
+    return pubKey().then(function(key){
+      return crypto.subtle.verify({ name:'ECDSA', hash:'SHA-256' }, key, sig, new TextEncoder().encode(payload));
+    }).then(function(ok){ return ok ? '' : '授权码无效（签名不对）'; })
+      .catch(function(){ return '浏览器不支持验证，请换 Chrome/Safari 新版'; });
+  }
+
+  window.copyMC = function(){
+    var t = document.getElementById('mc').textContent;
+    try { navigator.clipboard.writeText(t); } catch(e){}
+    document.getElementById('licErr').textContent = '机器码已复制 ✓';
+    document.getElementById('licErr').style.color = '#16873f';
+  };
+  window.doActivate = function(){
+    var code = document.getElementById('licInp').value || '';
+    var errEl = document.getElementById('licErr');
+    errEl.style.color = '#c0392b';
+    machineCode().then(function(mc){
+      return verifyLicense(code, mc).then(function(err){
+        if (err) { errEl.textContent = err; return; }
+        localStorage.setItem(LIC_KEY, code.trim());
+        errEl.style.color = '#16873f';
+        errEl.textContent = '激活成功 ✅';
+        document.getElementById('lic').style.display = 'none';
+        try { refreshAll(); } catch(e){}
+      });
+    });
+  };
+
+  // 启动：检查已保存的授权
+  machineCode().then(function(mc){
+    var el = document.getElementById('mc');
+    if (el) el.textContent = mc;
+    var saved = localStorage.getItem(LIC_KEY) || '';
+    if (saved) {
+      verifyLicense(saved, mc).then(function(err){
+        if (!err) { document.getElementById('lic').style.display = 'none'; }
+      });
+    }
+  });
+})();
+</script><script>
+/* ---------- 电脑中转（Tailscale 公网）：朋友的账号用它拿微信支付数据 ---------- */
+(function(){
+  // ★ 2026-10-18 优先用 Cloudflare 中转（电脑关机也能用），电脑中转作为备用
+  var RELAYS = [
+    'https://qbmobile.icu/api/relay?u='
+  ];
+  var RELAY = RELAYS[0];
+  var DAY = 86400;
+  var lastRun = 0;
+
+  function tradesOf(a){
+    var now = Math.floor(Date.now()/1000), begin = now - 14*DAY;
+    var target = 'https://api.unipay.qq.com/v1/r/1450000186/trade_record_query'
+      + '?CmdCode=query2&SubCmdCode=default&PageNum=1&BeginUnixTime=' + begin + '&EndUnixTime=' + now
+      + '&PageSize=50&SystemType=portal'
+      + '&openid=' + encodeURIComponent(a.openid||'') + '&openkey=' + encodeURIComponent(a.openkey||'')
+      + '&session_id=openid&session_type=kp_accesstoken&qq_appid=101502376';
+    // 单次 20 秒超时（手机走 Cloudflare 中转实测 8 秒左右，8 秒太短）
+    function once(ms){
+      return new Promise(function(resolve){
+        var done=false, ctl=null;
+        try { ctl = new AbortController(); } catch(e){}
+        var timer=setTimeout(function(){ if(done) return; done=true; try{ if(ctl) ctl.abort(); }catch(e){} resolve(null); }, ms);
+        fetch(RELAY + encodeURIComponent(target), { cache:'no-store', signal: ctl?ctl.signal:undefined })
+          .then(function(r){ return r.text(); })
+          .then(function(txt){
+            if(done) return; done=true; clearTimeout(timer);
+            var j=null; try { j=JSON.parse(txt); } catch(e){}
+            resolve((j && (j.ret===0||j.ret==='0'||j.ret===1018||j.ret===1001)) ? j : null);
+          })
+          .catch(function(){ if(done) return; done=true; clearTimeout(timer); resolve(null); });
+      });
+    }
+    // 失败再试 1 次（共 2 次），间隔 2 秒
+    function attempt(n){
+      return once(20000).then(function(j){
+        if (j) return j;
+        if (n >= 1) return null;
+        return new Promise(function(r){ setTimeout(r, 2000); }).then(function(){ return attempt(n+1); });
+      });
+    }
+    return attempt(0);
+  }
+
+  function computeSite(a, list){
+    var now = Math.floor(Date.now()/1000);
+    var trades = (list || []).map(function(x){
+      return { t: Number(x.PayTime||0), amt: Number(x.PayAmt||0)/100,
+               ch: String(x.PayChannel||''), show: String(x.ShowName||x.ProductName||'') };
+    }).filter(function(x){ return x.t > 0; }).sort(function(p,q){ return q.t - p.t; });
+    var wx = trades.filter(function(t){ return t.ch === 'wechat' || t.ch === 'weixin'; });
+    var wx7 = wx.filter(function(t){ return t.t >= now - 7*DAY; });
+    var risk = wx7.length > 4 ? 1 : 0;
+    // ★ 2026-10-22 7天后可充：最后一笔微信充值 + 7 天（和电脑版口径一致）
+    // ★ 2026-10-22 名额滚动：每周 4 个名额，每笔占 7 天
+    //   已满 4 笔 → 下一次能充 = 最早那笔(第4笔) + 7 天；不满 4 笔 → 现在就能充
+    var lastWx = wx7.length ? wx7[0].t : (wx.length ? wx[0].t : 0);
+    var freeSlots = Math.max(0, 4 - wx7.length);
+    var nextWxAt = 0;
+    if (wx7.length >= 4) nextWxAt = wx7[wx7.length-1].t + 7*DAY;
+    return {
+      uin: a.uin, wx7: wx7.length, nextWxAt: nextWxAt, lastWx: lastWx,
+      freeSlots: freeSlots, releaseAt: (wx7.length>=4 ? (wx7[wx7.length-1].t + 7*DAY) : 0),
+      wxFull: (wx7.length>=4?1:0),
+      wx7sum: Math.round(wx7.reduce(function(s,t){ return s + t.amt; }, 0) * 100) / 100,
+      risk: risk,
+      why: risk ? ('7 天内微信支付 ' + wx7.length + ' 笔，超过 4 笔') : '',
+      retry: '', trades: trades.slice(0, 40),
+      wx: wx.slice(0, 30).map(function(t){ return { t: t.t, amt: t.amt, ch: t.ch }; })
+    };
+  }
+
+  // 队列：最多 4 个并发，避免 17 个号同时打中转导致全部超时
+  var relayQueue = [], relayActive = 0, RELAY_MAX = 4;
+  function relayPump(){
+    while (relayActive < RELAY_MAX && relayQueue.length) {
+      var a = relayQueue.shift();
+      relayActive++;
+      (function(a){
+        // ★ 2026-10-22 已有 data.json 数据：保留显示，后台静默更新（不设 pending → 不会消失/闪烁）
+        var _have = (SITE||{})[a.uin];
+        var _quiet = !!(_have && typeof _have.wx7 === 'number' && !_have.err);
+        var cur = (SITE||{})[a.uin] || { uin: a.uin };
+        if(!_quiet){ cur.pending = 1; (SITE||{})[a.uin] = cur; patchRows(); }
+        tradesOf(a).then(function(j){
+          if (j && (j.ret === 0 || j.ret === '0')) {
+            (SITE||{})[a.uin] = computeSite(a, j.WaterList || []);
+            window.__siteLoaded = true;
+          } else {
+            var prev = (SITE||{})[a.uin];
+            if (!prev || !prev.trades || !prev.trades.length) (SITE||{})[a.uin] = { uin: a.uin, err: 1 };
+          }
+          try { lss('qbstd_site_cache_v1', { ts: Date.now(), accounts: SITE }); } catch(e){}
+          patchRows();
+          relayActive--; relayPump();
+        });
+      })(a);
+    }
+  }
+  function relayAll(){
+    if (!ACC || !ACC.length) { setTimeout(relayAll, 4000); return; }
+    if (relayActive > 0 || relayQueue.length) return;
+    relayQueue = ACC.slice();
+    relayPump();
+  }
+
+  // 失败账号每 45 秒自动重试（最多 5 轮），也可以点「重试」立即重来
+  var errRounds = 0;
+  setInterval(function(){
+    if (!ACC || !ACC.length || errRounds >= 5) return;
+    if (relayActive > 0 || relayQueue.length) return;
+    var need = [];
+    for (var i=0;i<ACC.length;i++){ var s=(SITE||{})[ACC[i].uin]; if (s && s.err) need.push(ACC[i]); }
+    if (!need.length) { errRounds = 0; return; }
+    errRounds++;
+    relayQueue = need.slice();
+    relayPump();
+  }, 45000);
+
+  window.retryTrades = function(uin){
+    var a=null; for (var i=0;i<ACC.length;i++) if (String(ACC[i].uin)===String(uin)) { a=ACC[i]; break; }
+    if (!a) return;
+    (SITE||{})[uin] = { uin: uin, pending: 1 };
+    patchRows();
+    tradesOf(a).then(function(j){
+      if (j && (j.ret===0||j.ret==='0')) { (SITE||{})[uin]=computeSite(a, j.WaterList||[]); window.__siteLoaded = true; }
+      else (SITE||{})[uin]={ uin: uin, err: 1 };
+      try { lss('qbstd_site_cache_v1', { ts: Date.now(), accounts: SITE }); } catch(e){}
+      patchRows();
+    });
+  };
+
+  window.addEventListener('load', function(){ setTimeout(relayAll, 3000); });
+  // 2026-10-22：后台刷新 10 → 15 分钟（少一点「一直在刷新」的观感）
+  setInterval(relayAll, 15 * 60 * 1000);
+})();
+
+/* ---------- 备份 / 恢复 ---------- */
+var bakMode='export';
+function openBackup(){
+  bakMode='export';
+  document.getElementById('bakTitle').textContent='导出备份';
+  document.getElementById('bakTip').textContent='复制下面这串内容保存好（微信收藏/备忘录）；换手机或清缓存后粘贴回来即可恢复。';
+  document.getElementById('bakBtn').textContent='复制';
+  var err=document.getElementById('bakErr'); err.textContent=''; err.style.color='#16873f';
+  var data={v:1,ts:Date.now(),accounts:ACC,key:(localStorage.getItem('qbstd_key_v1')||''),iv:getIV(),hide:HIDE};
+  var t=document.getElementById('bakText'); t.value=JSON.stringify(data);
+  document.getElementById('bakBox').hidden=false;
+  setTimeout(function(){ t.focus(); t.select(); },50);
+}
+function openRestore(){
+  bakMode='restore';
+  document.getElementById('bakTitle').textContent='恢复备份';
+  document.getElementById('bakTip').textContent='把之前导出的备份内容粘贴到下面，点「恢复」。';
+  document.getElementById('bakBtn').textContent='恢复';
+  var err=document.getElementById('bakErr'); err.textContent=''; err.style.color='#c0392b';
+  document.getElementById('bakText').value='';
+  document.getElementById('bakBox').hidden=false;
+  setTimeout(function(){ document.getElementById('bakText').focus(); },50);
+}
+function closeBackup(){ document.getElementById('bakBox').hidden=true; }
+function backupAction(){ if(bakMode==='export') copyBackup(); else doRestore(); }
+function copyBackup(){
+  var t=document.getElementById('bakText'), err=document.getElementById('bakErr');
+  t.focus(); t.select();
+  function done(good,msg){ err.style.color=good?'#16873f':'#c0392b'; err.textContent=msg; }
+  var ok=false;
+  try{ ok=document.execCommand('copy'); }catch(e){}
+  if(ok){ done(true,'已复制，去微信收藏/备忘录粘贴保存'); return; }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t.value).then(function(){ done(true,'已复制，去微信收藏/备忘录粘贴保存'); },function(){ done(false,'复制失败，请长按输入框全选复制'); });
+  } else done(false,'请长按输入框全选复制');
+}
+function doRestore(){
+  var err=document.getElementById('bakErr');
+  try{
+    var d=JSON.parse(document.getElementById('bakText').value||'');
+    if(!d || !Array.isArray(d.accounts)) throw new Error('格式不对');
+    var list=d.accounts.filter(function(a){ return a && a.openid && a.openkey; });
+    if(!list.length) throw new Error('备份里没有有效账号');
+    ACC=list; saveAll();
+    if(d.key && String(d.key).length===64){ try{ localStorage.setItem('qbstd_key_v1',String(d.key)); }catch(e){} }
+    if(typeof d.hide==='boolean'){ HIDE=d.hide; lss(KEY_HIDE,HIDE); document.getElementById('uinbtn').textContent=HIDE?'显示QQ号':'隐藏QQ号'; }
+    if(typeof d.iv==='number' && d.iv>=1 && d.iv<=60){ IV=d.iv; lss(KEY_IV,IV); startTimer(); }
+    err.style.color='#16873f'; err.textContent='恢复成功，正在刷新…';
+    setTimeout(function(){ closeBackup(); paint(); if(typeof refreshAll==='function') refreshAll(); },600);
+  }catch(e){ err.style.color='#c0392b'; err.textContent='恢复失败：'+e.message; }
+}
+
+/* ---------- 后台数据状态 / iOS 提示 ---------- */
+function checkStatus(){
+  var el=document.getElementById('stale'); if(!el) return;
+  if(window.navigator.standalone===true){
+    el.textContent='ℹ️ iOS 主屏幕模式可能丢数据：建议用 Safari 书签打开，并在「设置」里定期导出备份。';
+    el.style.display='block'; return;
+  }
+  fetch('status.json?t='+Date.now(),{cache:'no-store'}).then(function(r){ return r.json(); }).then(function(s){
+    var age=Math.floor(Date.now()/1000)-(Number(s.ts)||0);
+    if(age>5400){ el.textContent='⚠ 后台数据已 '+(age>=3600?Math.floor(age/3600)+' 小时':Math.floor(age/60)+' 分钟')+' 未更新，可能是 CK 过期'; el.style.display='block'; }
+    else if(s.ok===false){ el.textContent='⚠ 最近一次后台刷新：'+(s.errCount||0)+' 个账号失败'+(s.error?('（'+s.error+'）'):''); el.style.display='block'; }
+    else { el.style.display='none'; }
+  }).catch(function(){});
+}
+
+/* ---------- 合并定时器：2 秒一次，页面隐藏时暂停 ---------- */
+(function(){
+  // 2026-10-22 性能：5 秒一次；滑动/触摸中跳过；防重入
+  var _lastScrollAt = 0;
+  window.addEventListener('scroll', function () { _lastScrollAt = Date.now(); }, { passive: true });
+  window.addEventListener('touchmove', function () { _lastScrollAt = Date.now(); }, { passive: true });
+  var _tickBusy = false;
+  function tick(){
+    if (document.hidden) return;
+    if (Date.now() - _lastScrollAt < 700) return;
+    if (_tickBusy) return;
+    _tickBusy = true;
+    try { patchRows(); } catch (e) { }
+    try { patchRows2(); } catch (e) { }
+    setTimeout(function () { _tickBusy = false; }, 250);
+  }
+  setInterval(tick, 5000);
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) tick(); });
+  window.addEventListener('load', function(){ setTimeout(function(){ tick(); checkStatus(); }, 1000); });
+})();
+</script></body>
+</html>
